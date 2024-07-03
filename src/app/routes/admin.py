@@ -78,20 +78,36 @@ def get_dynamic_table(orders: list[list[str | int]]) -> list[list[str | int]]:
 
     # Sort column headers in lexicographical order (by chars in unicode value range) ascending from low to high
     allProductNames = sorted(allProductNames)
-    all_column_headers: list[str | int] = ["Order ID"] + [d for d in allProductNames]
+
+    all_column_headers: list[str | int] = ["Order ID"] + [d for d in allProductNames] + ["Total"]
+    #all_column_headers: list[str | int] = ["Order ID"] + [d for d in allProductNames]
 
     dynamic_table: list[list[str | int]] = [all_column_headers]
     test: int = 0
 
     # Fill 2d array with values, where column headers are product name and row headers are order id
+    #for row_order_id in sorted(all_orders, key=int):  # Sorts tables ascending by order_id from low int to high int
+    #    rows: list[str | int] = [row_order_id]
+    #    for i in range(1, len(all_column_headers)):
+    #        current_product: str = all_column_headers[i]
+    #        if current_product in all_orders[row_order_id]:
+    #            rows.append(all_orders[row_order_id][current_product])
+    #        else:
+    #            rows.append(0)
+    #    dynamic_table.append(rows)
+
     for row_order_id in sorted(all_orders, key=int):  # Sorts tables ascending by order_id from low int to high int
         rows: list[str | int] = [row_order_id]
-        for i in range(1, len(all_column_headers)):
+        row_total: int = 0
+        for i in range(1, len(all_column_headers) - 1):
             current_product: str = all_column_headers[i]
             if current_product in all_orders[row_order_id]:
-                rows.append(all_orders[row_order_id][current_product])
+                product_count = all_orders[row_order_id][current_product]
+                rows.append(product_count)
+                row_total += product_count
             else:
                 rows.append(0)
+        rows.append(row_total)  # Hinzufügen der Gesamtsumme zur letzten Spalte
         dynamic_table.append(rows)
 
     # Creates total row containing the total for each column
